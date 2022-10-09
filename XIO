@@ -1,0 +1,123 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace ConsoleApplication2
+{
+    class Program
+    {
+        public static double f(double x)
+        {
+            return x * x - 4;
+        }
+        public static double fp(double x, double D)
+        {
+            return (f(x + D) - f(x)) / D;
+        }
+        public static double f2p(double x, double D)
+        {
+            return ((f(x + D) + f(x - D) - 2 * f(x)) / (D * D));
+        }
+        
+        public static void newton(double a, double b, double Eps, double Dx){
+                    double D = Eps / 1000;
+                    Console.Write("Maximum number of iterations: ");
+                    int Kmax = Convert.ToInt32(Console.ReadLine());
+                    double x = b;
+                    if (f(x) * f2p(x, D) < 0)
+                    {
+                        x = a;
+                        Console.WriteLine("For a given equation, the convergence of Newton's method is not guaranteed");
+                    }
+                    for (int i = 1; i <= Kmax; i++)
+                    {
+                        Dx = f(x) / fp(x, D);
+                        x = x - Dx;
+                        if (Math.Abs(Dx) > Eps)
+
+                            continue;
+                        Console.WriteLine($"solution = {x}");
+                        Console.WriteLine($"Number of integrations = {i}");
+                        // return;
+                        break;
+                    }
+                    if(Math.Abs(Dx) > Eps){
+                        Console.WriteLine("The root of the equation was not found!");
+                    }
+        }
+        
+        public static void  mpd(double a, double b, double Eps){
+            int Lich = 0;
+            if (f(a) * f(b) > 0) // Перевіряємо, чи є корінь на інтервалі [a, b]
+                {
+                    Console.WriteLine("No root in the interval");
+                    Console.ReadLine(); // Затримка показу повідомлення
+                    //return;
+                }
+            if (Math.Abs(f(a)) < Eps) // Перевіряємо, чи ліва межа не є коренем
+                {
+                Console.WriteLine("x = " + a + " Lich = " + Lich);
+                Console.ReadLine(); // Затримка показу повідомлення
+                //return;
+            }
+            else
+            if (Math.Abs(f(b)) < Eps) // Перевіряємо, чи права межа не є коренем
+            {
+                Console.WriteLine("x = " + b + " Lich = " + Lich);
+                Console.ReadLine(); // Затримка показу повідомлення
+                //return;
+            }
+            else
+            {
+                while (Math.Abs(b - a) > Eps) // Цикл Методу ділення навпіл
+                    {
+                    var c = 0.5 * (a + b);
+                    Lich++;
+                    if (Math.Abs(f(c)) < Eps) // Перевіряємо, чи точка с не є коренем
+                    {
+                        Console.WriteLine("x = " + c + " Lich = " + Lich);
+                        Console.ReadLine(); // Затримка показу повідомлення
+                        //return;
+                        break;
+                    }
+                    else if (f(a) * f(c) < 0) b = c; // Звуження інтервалу пошуку кореня
+                    else a = c;
+                }
+                Console.WriteLine("x = " + (a + b) / 2 + " Lich = " + Lich);
+                Console.ReadLine(); // Затримка показу повідомлення
+                //return;
+            }
+        }
+        
+        static void Main(string[] args)
+        {
+            int k;
+            double a, b, x, i, L;
+            int Kmax;
+            double Dx = 0.0;
+            double Eps = 1;
+
+            Console.Write("Menu:\n1) Newton's method \n2) method of division in half \n ");
+            k = int.Parse(Console.ReadLine());
+            Console.Write("Specify the left border: ");
+            a = double.Parse(Console.ReadLine());
+            Console.Write("Specify the right border: ");
+            b = double.Parse(Console.ReadLine());
+            Console.Write("Specify the accuracy of the calculations: ");
+            Eps = double.Parse(Console.ReadLine());
+            switch (k)
+            {
+                case 1:
+                    newton(a, b, Eps, Dx);
+                    break;
+                case 2:
+                    mpd(a, b, Eps);
+                    break;
+            }
+            Console.Write("\nPress any key");
+            Console.ReadLine();
+            Console.Clear();
+        }
+    }
+}
